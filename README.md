@@ -1,5 +1,7 @@
 # nix-cavemem
 
+[![CI](https://github.com/pr0d1r2/nix-cavemem/actions/workflows/ci.yml/badge.svg)](https://github.com/pr0d1r2/nix-cavemem/actions/workflows/ci.yml)
+
 Nix package for [cavemem](https://github.com/JuliusBrussee/cavemem) — cross-agent persistent memory with compressed storage.
 
 ## Usage
