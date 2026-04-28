@@ -64,6 +64,7 @@
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
           packages = [
+            (import ./cavemem.nix { inherit pkgs; })
             nix-lefthook-git-conflict-markers.packages.${pkgs.stdenv.hostPlatform.system}.default
             nix-lefthook-git-no-local-paths.packages.${pkgs.stdenv.hostPlatform.system}.default
             nix-lefthook-missing-final-newline.packages.${pkgs.stdenv.hostPlatform.system}.default

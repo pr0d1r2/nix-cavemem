@@ -36,6 +36,7 @@ pkgs.buildNpmPackage {
   ];
 
   buildInputs = with pkgs; [
+    nodejs
     sqlite
   ];
 
