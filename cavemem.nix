@@ -12,12 +12,14 @@ let
     inherit src;
     sourceRoot = "package";
     dontBuild = true;
-    installPhase = builtins.readFile (
-      pkgs.replaceVars ./install-prepared.sh {
-        packageJson = ./package.json;
-        packageLockJson = ./package-lock.json;
-      }
-    );
+    localPackageJson = ./package.json;
+    localPackageLockJson = ./package-lock.json;
+    installPhase = ''
+      mkdir -p "$out"
+      cp -r . "$out/"
+      cp "$localPackageJson" "$out/package.json"
+      cp "$localPackageLockJson" "$out/package-lock.json"
+    '';
   };
 in
 pkgs.buildNpmPackage {
