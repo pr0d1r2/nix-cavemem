@@ -2,7 +2,14 @@
 set -euo pipefail
 
 CACHE="${1:-pr0d1r2}"
-FLAKE="${2:-.}"
+if [ -n "${2:-}" ]; then
+  FLAKE="$2"
+elif remote_url=$(git remote get-url origin 2>/dev/null); then
+  repo=$(echo "$remote_url" | sed -E 's|.*github\.com[:/](.+)(\.git)?$|\1|' | sed 's/\.git$//')
+  FLAKE="github:${repo}"
+else
+  FLAKE="."
+fi
 SYSTEMS=("aarch64-darwin" "x86_64-darwin" "x86_64-linux" "aarch64-linux")
 
 cache_url="https://${CACHE}.cachix.org"
