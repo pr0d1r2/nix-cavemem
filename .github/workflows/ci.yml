@@ -17,6 +17,11 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
+            accept-flake-config = true
+      - uses: cachix/cachix-action@v17
+        with:
+          name: pr0d1r2
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - name: Build
         run: nix build
       - name: Pre-commit checks
@@ -31,6 +36,11 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
+            accept-flake-config = true
+      - uses: cachix/cachix-action@v17
+        with:
+          name: pr0d1r2
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - name: Build
         run: nix build
       - name: Pre-commit checks

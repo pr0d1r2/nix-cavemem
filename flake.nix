@@ -1,6 +1,11 @@
 {
   description = "Nix package for cavemem — cross-agent persistent memory";
 
+  nixConfig = {
+    extra-substituters = [ "https://pr0d1r2.cachix.org" ];
+    extra-trusted-public-keys = [ "pr0d1r2.cachix.org-1:NfWjbhgAj41byXhCKiaE+av3Vnphm1fTezHXEGsiQIM=" ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nix-dev-shell-agentic-stub = {
