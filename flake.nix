@@ -112,7 +112,7 @@
         default = import ./cavemem.nix { inherit pkgs; };
       });
 
-      devShells = forAllSystems (pkgs: {
+      devShells = forAllSystems (pkgs: rec {
         default = pkgs.mkShell {
           packages = [
             (import ./cavemem.nix { inherit pkgs; })
@@ -134,6 +134,7 @@
           ];
           shellHook = builtins.readFile ./dev.sh;
         };
+        ci = default;
       });
     };
 }
