@@ -29,7 +29,7 @@ devShells.${system}.ci       # alias for default (used in CI)
 
 ### CLI (provided by upstream cavemem)
 
-```
+```text
 cavemem            # entry point: dist/index.js
 ```
 
@@ -46,7 +46,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 ### Configuration files
 
 | File | Format | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `flake.nix` | Nix | Flake definition, inputs, outputs, dev shell |
 | `flake.lock` | JSON | Pinned input revisions |
 | `cavemem.nix` | Nix | Package derivation for cavemem |
@@ -61,13 +61,13 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 ### Environment variables
 
 | Variable | Set by | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `NIX_CONFIG` | `dev.sh` | Enables `nix-command flakes` experimental features |
 
 ### GitHub Actions workflows
 
 | Workflow | Trigger | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `ci.yml` | push/PR to main, dispatch | Build on Linux x86_64, Linux ARM, macOS (x86_64 + ARM); push to cachix |
 | `update-pins.yml` | daily cron (03:30 UTC), dispatch | Auto-update `nixpkgs-lock` pin via PR |
 | `update-upstream.yml` | daily cron (04:30 UTC), dispatch | Detect new cavemem npm version and open a PR to bump `version`, `src.hash`, `npmDepsHash` |
@@ -75,7 +75,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 ## §T — Tasks
 
 | status | id | goal |
-|---|---|---|
+| --- | --- | --- |
 | `x` | T1 | Add a `CLAUDE.md` with build/lint/test commands and project conventions |
 | `x` | T2 | Add `nix build` / `nix flake check` smoke test to CI that validates the built binary runs (`cavemem --help`) |
 | `x` | T3 | Add a `deadnix` lefthook wrapper to `flake.nix` (deadnix is in devShell packages and lefthook remotes, but missing from the `lefthookWrappersFor` list) |
@@ -84,12 +84,12 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | `x` | T6 | Add automated upstream version tracking — detect when cavemem publishes a new npm version and open a PR to bump `version`, `src.hash`, and `npmDepsHash` |
 | `x` | T7 | Add `markdownlint` to the lefthook pre-commit checks (config exists in `.markdownlint.yml` but no hook is wired) |
 | `x` | T8 | Add macOS ARM (`macos-latest-xlarge` or similar) CI job for full `aarch64-darwin` coverage |
-| `.` | T9 | Add `git-no-local-paths` lefthook wrapper to `flake.nix` (in lefthook remotes and devShell but missing from `lefthookWrappersFor`) |
+| `x` | T9 | Add `git-no-local-paths` lefthook wrapper to `flake.nix` (in lefthook remotes and devShell but missing from `lefthookWrappersFor`) |
 | `.` | T10 | Consider extracting the `lefthookWrappersFor` pattern into a shared flake utility since it is repeated across multiple `pr0d1r2/nix-*` projects |
 
 ## §B — Bugs / Known Issues
 
-1. **Missing lefthook wrappers**: The `lefthookWrappersFor` function in `flake.nix` does not include wrappers for `deadnix`, `yamllint`, or `git-no-local-paths`, even though these tools are in the devShell packages and have lefthook remote configs in `lefthook.yml`. The hooks will only work if these tools happen to be on `$PATH` outside the Nix shell.
+1. ~~**Missing lefthook wrappers**~~: Fixed by T3, T5, and T9 — `deadnix`, `yamllint`, and `git-no-local-paths` now all have wrappers in `lefthookWrappersFor`.
 2. ~~**No `markdownlint` hook or package**~~: Fixed by T7 — markdownlint is now in devShell packages, wired as a lefthook remote hook, and has a wrapper in `lefthookWrappersFor`.
 3. **Hardcoded upstream version**: The cavemem version (`0.1.3`) is specified in three places — `cavemem.nix`, `package.json`, and `package-lock.json` — with no single source of truth or automated update mechanism. A version bump requires coordinated edits plus hash recalculation.
 4. **`ci.yml` uses `actions/checkout@v6`; `update-pins.yml` uses `actions/checkout@v4`**: Inconsistent action versions across workflows; `update-pins.yml` should be updated to v6 for consistency.
