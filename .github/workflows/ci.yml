@@ -17,6 +17,10 @@ jobs:
         with:
           cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
           skip-lefthook: 'true'
+      - name: Smoke-test cavemem binary
+        run: |
+          nix build
+          ./result/bin/cavemem --help
 
   build-linux-arm:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
@@ -27,6 +31,10 @@ jobs:
         with:
           cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
           skip-lefthook: 'true'
+      - name: Smoke-test cavemem binary
+        run: |
+          nix build
+          ./result/bin/cavemem --help
 
   build-macos:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
@@ -37,3 +45,7 @@ jobs:
         with:
           cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
           skip-lefthook: 'true'
+      - name: Smoke-test cavemem binary
+        run: |
+          nix build
+          ./result/bin/cavemem --help

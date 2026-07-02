@@ -75,7 +75,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | status | id | goal |
 |---|---|---|
 | `x` | T1 | Add a `CLAUDE.md` with build/lint/test commands and project conventions |
-| `.` | T2 | Add `nix build` / `nix flake check` smoke test to CI that validates the built binary runs (`cavemem --help`) |
+| `x` | T2 | Add `nix build` / `nix flake check` smoke test to CI that validates the built binary runs (`cavemem --help`) |
 | `.` | T3 | Add a `deadnix` lefthook wrapper to `flake.nix` (deadnix is in devShell packages and lefthook remotes, but missing from the `lefthookWrappersFor` list) |
 | `.` | T4 | Pin the `nix-lefthook-ci-action` in `ci.yml` to a tagged release instead of a bare commit SHA for readability |
 | `.` | T5 | Add `yamllint` lefthook wrapper to `flake.nix` (yamllint is in devShell packages and lefthook remotes, but missing from `lefthookWrappersFor`) |
