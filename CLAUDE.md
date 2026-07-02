@@ -72,7 +72,10 @@ lefthook run pre-commit  # all lint checks
 | `package-lock.json` | Locked npm dependency tree (drives `npmDepsHash`) |
 | `lefthook.yml` | Pre-commit hook configuration (12 remote hooks) |
 | `dev.sh` | Dev shell hook: sets `NIX_CONFIG`, auto-installs lefthook |
+| `scripts/update-upstream.sh` | Upstream version bump: updates hashes and package files |
 
 ## CI
 
 GitHub Actions (`ci.yml`): builds on `ubuntu-latest` (x86_64), `ubuntu-24.04-arm` (aarch64), and `macos-latest`. ARM and macOS jobs run only on push/dispatch, not on PRs. Builds are pushed to cachix.
+
+A daily cron workflow (`update-upstream.yml`, 04:30 UTC) checks the npm registry for new cavemem releases and opens a PR to bump `version`, `src.hash`, and `npmDepsHash` in `cavemem.nix` (plus synced `package.json` and `package-lock.json`). The bump logic lives in `scripts/update-upstream.sh`.

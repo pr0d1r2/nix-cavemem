@@ -56,6 +56,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | `.editorconfig` | INI | Editor formatting rules |
 | `.envrc` | Shell | direnv integration (`use flake`) |
 | `dev.sh` | Shell | Dev shell hook: sets `NIX_CONFIG`, auto-installs lefthook |
+| `scripts/update-upstream.sh` | Shell | Upstream version bump script: updates hashes, `package.json`, `package-lock.json` |
 
 ### Environment variables
 
@@ -69,6 +70,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 |---|---|---|
 | `ci.yml` | push/PR to main, dispatch | Build on Linux x86_64, Linux ARM, macOS; push to cachix |
 | `update-pins.yml` | daily cron (03:30 UTC), dispatch | Auto-update `nixpkgs-lock` pin via PR |
+| `update-upstream.yml` | daily cron (04:30 UTC), dispatch | Detect new cavemem npm version and open a PR to bump `version`, `src.hash`, `npmDepsHash` |
 
 ## §T — Tasks
 
@@ -79,7 +81,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | `x` | T3 | Add a `deadnix` lefthook wrapper to `flake.nix` (deadnix is in devShell packages and lefthook remotes, but missing from the `lefthookWrappersFor` list) |
 | `x` | T4 | Use the full 40-char commit SHA for `nix-lefthook-ci-action` in `ci.yml` (no tagged releases exist on the action repo) |
 | `x` | T5 | Add `yamllint` lefthook wrapper to `flake.nix` (yamllint is in devShell packages and lefthook remotes, but missing from `lefthookWrappersFor`) |
-| `.` | T6 | Add automated upstream version tracking — detect when cavemem publishes a new npm version and open a PR to bump `version`, `src.hash`, and `npmDepsHash` |
+| `x` | T6 | Add automated upstream version tracking — detect when cavemem publishes a new npm version and open a PR to bump `version`, `src.hash`, and `npmDepsHash` |
 | `.` | T7 | Add `markdownlint` to the lefthook pre-commit checks (config exists in `.markdownlint.yml` but no hook is wired) |
 | `.` | T8 | Add macOS ARM (`macos-latest-xlarge` or similar) CI job for full `aarch64-darwin` coverage |
 | `.` | T9 | Add `git-no-local-paths` lefthook wrapper to `flake.nix` (in lefthook remotes and devShell but missing from `lefthookWrappersFor`) |

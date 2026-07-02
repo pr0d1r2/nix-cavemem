@@ -1,0 +1,75 @@
+---
+name: Update upstream cavemem
+
+on:
+  schedule:
+    - cron: '30 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: cachix/install-nix-action@v30
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check for new upstream version
+        id: check
+        run: |
+          CURRENT=$(sed -n 's/.*version = "\([^"]*\)".*/\1/p' cavemem.nix | head -1)
+          LATEST=$(curl -sf https://registry.npmjs.org/cavemem/latest | jq -r '.version')
+          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+          if [ "$CURRENT" = "$LATEST" ]; then
+            echo "update=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "update=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check for existing PR
+        if: steps.check.outputs.update == 'true'
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="update-cavemem-${{ steps.check.outputs.latest }}"
+          if gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number' 2>/dev/null | grep -q .; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update to new version
+        if: steps.check.outputs.update == 'true' && steps.existing.outputs.exists != 'true'
+        run: bash scripts/update-upstream.sh "${{ steps.check.outputs.latest }}"
+
+      - name: Create pull request
+        if: steps.check.outputs.update == 'true' && steps.existing.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST="${{ steps.check.outputs.latest }}"
+          CURRENT="${{ steps.check.outputs.current }}"
+          BRANCH="update-cavemem-${LATEST}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add cavemem.nix package.json package-lock.json
+          git commit -m "bump cavemem ${CURRENT} -> ${LATEST}"
+          git push origin "$BRANCH"
+          gh pr create \
+            --title "bump cavemem ${CURRENT} -> ${LATEST}" \
+            --body "Automated upstream version bump: cavemem ${CURRENT} -> ${LATEST}." \
+            --base main
