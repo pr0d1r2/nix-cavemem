@@ -77,6 +77,6 @@ lefthook run pre-commit  # all lint checks
 
 ## CI
 
-GitHub Actions (`ci.yml`): builds on `ubuntu-latest` (x86_64), `ubuntu-24.04-arm` (aarch64), `macos-latest` (x86_64), and `macos-latest-xlarge` (aarch64). ARM and macOS jobs run only on push/dispatch, not on PRs. Builds are pushed to cachix.
+GitHub Actions (`ci.yml`): builds on `ubuntu-latest` (x86_64), `ubuntu-24.04-arm` (aarch64), and `macos-latest` (aarch64-darwin). ARM and macOS jobs run only on push/dispatch, not on PRs. Builds are pushed to cachix.
 
 A daily cron workflow (`update-upstream.yml`, 04:30 UTC) checks the npm registry for new cavemem releases and opens a PR to bump `version`, `src.hash`, and `npmDepsHash` in `cavemem.nix` (plus synced `package.json` and `package-lock.json`). The bump logic lives in `scripts/update-upstream.sh`.

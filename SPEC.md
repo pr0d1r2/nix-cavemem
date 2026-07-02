@@ -8,7 +8,7 @@ nix-cavemem is a Nix flake that packages [cavemem](https://github.com/JuliusBrus
 
 1. `nix flake check` must pass — enforced by CI and the `nix-lefthook-nix-flake-check` pre-commit hook.
 2. The package must build on all four supported systems: `aarch64-darwin`, `x86_64-darwin`, `x86_64-linux`, `aarch64-linux`.
-3. CI builds run on `ubuntu-latest` (x86_64), `ubuntu-24.04-arm` (aarch64), `macos-latest`, and `macos-latest-xlarge` (aarch64-darwin) — ARM and macOS jobs run only on push/dispatch, not on PRs.
+3. CI builds run on `ubuntu-latest` (x86_64), `ubuntu-24.04-arm` (aarch64), and `macos-latest` (aarch64-darwin) — ARM and macOS jobs run only on push/dispatch, not on PRs.
 4. Pre-commit hooks (via lefthook) enforce: nixfmt formatting, statix linting, deadnix unused-code detection, no embedded shell scripts in Nix files, editorconfig compliance, markdownlint, yamllint, typos, trailing whitespace removal, final newline presence, no git conflict markers, and no local Nix paths.
 5. `package.json` and `package-lock.json` are locally maintained and copied over the upstream npm tarball sources during the `prepared` derivation phase — they must stay in sync with upstream cavemem v0.1.3.
 6. The `npmDepsHash` in `cavemem.nix` must match the locked dependency tree; any `package-lock.json` change requires updating this hash.
