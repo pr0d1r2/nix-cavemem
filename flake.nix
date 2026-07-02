@@ -148,6 +148,7 @@
             pkgs.lefthook
             pkgs.nix
             pkgs.nixfmt
+            pkgs.statix
             pkgs.typos
             pkgs.yamllint
           ]
