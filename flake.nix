@@ -49,6 +49,10 @@
       url = "github:pr0d1r2/nix-lefthook-typos";
       flake = false;
     };
+    nix-lefthook-yamllint-src = {
+      url = "github:pr0d1r2/nix-lefthook-yamllint";
+      flake = false;
+    };
   };
 
   outputs =
@@ -64,6 +68,7 @@
       nix-lefthook-editorconfig-checker-src,
       nix-lefthook-nixfmt-src,
       nix-lefthook-typos-src,
+      nix-lefthook-yamllint-src,
       ...
     }:
     let
@@ -121,6 +126,9 @@
           })
           (wrap "lefthook-typos" nix-lefthook-typos-src {
             runtimeInputs = [ pkgs.typos ];
+          })
+          (wrap "lefthook-yamllint" nix-lefthook-yamllint-src {
+            runtimeInputs = [ pkgs.yamllint ];
           })
         ];
     in

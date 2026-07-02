@@ -160,6 +160,22 @@
         "type": "github"
       }
     },
+    "nix-lefthook-yamllint-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780983364,
+        "narHash": "sha256-NzF2nt32w4f5tlNDGkaZAOHBtt0OmNcpnQ9aDiqetF4=",
+        "owner": "pr0d1r2",
+        "repo": "nix-lefthook-yamllint",
+        "rev": "fbd0497ae8df6f80233b8e8178f5ff71c9673170",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pr0d1r2",
+        "repo": "nix-lefthook-yamllint",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1780511130,
@@ -206,6 +222,7 @@
         "nix-lefthook-statix-src": "nix-lefthook-statix-src",
         "nix-lefthook-trailing-whitespace-src": "nix-lefthook-trailing-whitespace-src",
         "nix-lefthook-typos-src": "nix-lefthook-typos-src",
+        "nix-lefthook-yamllint-src": "nix-lefthook-yamllint-src",
         "nixpkgs": [
           "nixpkgs-lock",
           "nixpkgs"
