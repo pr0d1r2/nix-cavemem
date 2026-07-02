@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "nix-lefthook-deadnix-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780983746,
+        "narHash": "sha256-t+pOE28UtLv5tJGJBZ5wF0i6F2FIIZTNCLeiDdJfBXw=",
+        "owner": "pr0d1r2",
+        "repo": "nix-lefthook-deadnix",
+        "rev": "14a39097568e42c232f038200d1555b89f27ac11",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pr0d1r2",
+        "repo": "nix-lefthook-deadnix",
+        "type": "github"
+      }
+    },
     "nix-lefthook-editorconfig-checker-src": {
       "flake": false,
       "locked": {
@@ -180,6 +196,7 @@
     },
     "root": {
       "inputs": {
+        "nix-lefthook-deadnix-src": "nix-lefthook-deadnix-src",
         "nix-lefthook-editorconfig-checker-src": "nix-lefthook-editorconfig-checker-src",
         "nix-lefthook-git-conflict-markers-src": "nix-lefthook-git-conflict-markers-src",
         "nix-lefthook-git-no-local-paths-src": "nix-lefthook-git-no-local-paths-src",

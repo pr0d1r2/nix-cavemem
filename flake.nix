@@ -33,6 +33,10 @@
       url = "github:pr0d1r2/nix-lefthook-statix";
       flake = false;
     };
+    nix-lefthook-deadnix-src = {
+      url = "github:pr0d1r2/nix-lefthook-deadnix";
+      flake = false;
+    };
     nix-lefthook-editorconfig-checker-src = {
       url = "github:pr0d1r2/nix-lefthook-editorconfig-checker";
       flake = false;
@@ -56,6 +60,7 @@
       nix-lefthook-nix-no-embedded-shell-src,
       nix-lefthook-trailing-whitespace-src,
       nix-lefthook-statix-src,
+      nix-lefthook-deadnix-src,
       nix-lefthook-editorconfig-checker-src,
       nix-lefthook-nixfmt-src,
       nix-lefthook-typos-src,
@@ -104,6 +109,9 @@
           })
           (wrap "lefthook-trailing-whitespace" nix-lefthook-trailing-whitespace-src {
             runtimeInputs = [ pkgs.gnugrep ];
+          })
+          (wrap "lefthook-deadnix" nix-lefthook-deadnix-src {
+            runtimeInputs = [ pkgs.deadnix ];
           })
           (wrap "lefthook-editorconfig-checker" nix-lefthook-editorconfig-checker-src {
             runtimeInputs = [ pkgs.editorconfig-checker ];
