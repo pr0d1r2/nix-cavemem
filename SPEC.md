@@ -77,7 +77,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | `x` | T1 | Add a `CLAUDE.md` with build/lint/test commands and project conventions |
 | `x` | T2 | Add `nix build` / `nix flake check` smoke test to CI that validates the built binary runs (`cavemem --help`) |
 | `x` | T3 | Add a `deadnix` lefthook wrapper to `flake.nix` (deadnix is in devShell packages and lefthook remotes, but missing from the `lefthookWrappersFor` list) |
-| `.` | T4 | Pin the `nix-lefthook-ci-action` in `ci.yml` to a tagged release instead of a bare commit SHA for readability |
+| `x` | T4 | Use the full 40-char commit SHA for `nix-lefthook-ci-action` in `ci.yml` (no tagged releases exist on the action repo) |
 | `.` | T5 | Add `yamllint` lefthook wrapper to `flake.nix` (yamllint is in devShell packages and lefthook remotes, but missing from `lefthookWrappersFor`) |
 | `.` | T6 | Add automated upstream version tracking — detect when cavemem publishes a new npm version and open a PR to bump `version`, `src.hash`, and `npmDepsHash` |
 | `.` | T7 | Add `markdownlint` to the lefthook pre-commit checks (config exists in `.markdownlint.yml` but no hook is wired) |
@@ -93,3 +93,5 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 4. **`ci.yml` uses `actions/checkout@v6`; `update-pins.yml` uses `actions/checkout@v4`**: Inconsistent action versions across workflows; `update-pins.yml` should be updated to v6 for consistency.
 5. **No runtime test**: CI builds the package but never runs it — a failing `dist/index.js` (e.g., missing native module) would not be caught until a user tries `nix run`.
 6. **`devShells.ci` is just an alias**: `ci = default` means the CI shell pulls in developer-only tools (lefthook wrappers, editorconfig-checker, etc.) that are unused in the CI build job. A leaner CI-specific shell would reduce closure size and build time.
+7. **`ci.yml` referenced non-existent `@v1` tag on `nix-lefthook-ci-action`**: T4 changed the action ref from a commit SHA to `@v1`, but no tags exist on the `nix-lefthook-ci-action` repo. CI failed with `Unable to resolve action … unable to find version v1`. Fixed by pinning to the latest commit SHA `ce9a118` (2026-07-02).
+8. **`ci.yml` used shortened commit SHA for `nix-lefthook-ci-action`**: The fix for B7 pinned to shortened SHA `ce9a118` (7 chars), but GitHub Actions requires the full 40-character commit SHA. CI failed with `the provided ref … is the shortened version of a commit SHA, which is not supported`. Fixed by using the full SHA `ce9a118b05e90e186dba48a82067adeed185f7d4` (2026-07-02).
