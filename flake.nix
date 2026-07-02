@@ -49,6 +49,10 @@
       url = "github:pr0d1r2/nix-lefthook-typos";
       flake = false;
     };
+    nix-lefthook-markdownlint-src = {
+      url = "github:pr0d1r2/nix-lefthook-markdownlint";
+      flake = false;
+    };
     nix-lefthook-yamllint-src = {
       url = "github:pr0d1r2/nix-lefthook-yamllint";
       flake = false;
@@ -66,6 +70,7 @@
       nix-lefthook-statix-src,
       nix-lefthook-deadnix-src,
       nix-lefthook-editorconfig-checker-src,
+      nix-lefthook-markdownlint-src,
       nix-lefthook-nixfmt-src,
       nix-lefthook-typos-src,
       nix-lefthook-yamllint-src,
@@ -121,6 +126,9 @@
           (wrap "lefthook-editorconfig-checker" nix-lefthook-editorconfig-checker-src {
             runtimeInputs = [ pkgs.editorconfig-checker ];
           })
+          (wrap "lefthook-markdownlint" nix-lefthook-markdownlint-src {
+            runtimeInputs = [ pkgs.markdownlint-cli ];
+          })
           (wrap "lefthook-nixfmt" nix-lefthook-nixfmt-src {
             runtimeInputs = [ pkgs.nixfmt ];
           })
@@ -146,6 +154,7 @@
             pkgs.editorconfig-checker
             pkgs.git
             pkgs.lefthook
+            pkgs.markdownlint-cli
             pkgs.nix
             pkgs.nixfmt
             pkgs.statix

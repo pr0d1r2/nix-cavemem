@@ -9,7 +9,7 @@ nix-cavemem is a Nix flake that packages [cavemem](https://github.com/JuliusBrus
 1. `nix flake check` must pass — enforced by CI and the `nix-lefthook-nix-flake-check` pre-commit hook.
 2. The package must build on all four supported systems: `aarch64-darwin`, `x86_64-darwin`, `x86_64-linux`, `aarch64-linux`.
 3. CI builds run on `ubuntu-latest` (x86_64), `ubuntu-24.04-arm` (aarch64), and `macos-latest` — ARM and macOS jobs run only on push/dispatch, not on PRs.
-4. Pre-commit hooks (via lefthook) enforce: nixfmt formatting, statix linting, deadnix unused-code detection, no embedded shell scripts in Nix files, editorconfig compliance, yamllint, typos, trailing whitespace removal, final newline presence, no git conflict markers, and no local Nix paths.
+4. Pre-commit hooks (via lefthook) enforce: nixfmt formatting, statix linting, deadnix unused-code detection, no embedded shell scripts in Nix files, editorconfig compliance, markdownlint, yamllint, typos, trailing whitespace removal, final newline presence, no git conflict markers, and no local Nix paths.
 5. `package.json` and `package-lock.json` are locally maintained and copied over the upstream npm tarball sources during the `prepared` derivation phase — they must stay in sync with upstream cavemem v0.1.3.
 6. The `npmDepsHash` in `cavemem.nix` must match the locked dependency tree; any `package-lock.json` change requires updating this hash.
 7. All files use UTF-8 encoding, LF line endings, 2-space indentation, trimmed trailing whitespace, and a final newline (`.editorconfig`).
@@ -52,7 +52,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | `cavemem.nix` | Nix | Package derivation for cavemem |
 | `package.json` | JSON | npm metadata overlaid onto upstream tarball |
 | `package-lock.json` | JSON | Locked npm dependency tree for `npmDepsHash` |
-| `lefthook.yml` | YAML | Pre-commit hook configuration (12 remote hooks) |
+| `lefthook.yml` | YAML | Pre-commit hook configuration (13 remote hooks) |
 | `.editorconfig` | INI | Editor formatting rules |
 | `.envrc` | Shell | direnv integration (`use flake`) |
 | `dev.sh` | Shell | Dev shell hook: sets `NIX_CONFIG`, auto-installs lefthook |
@@ -82,7 +82,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | `x` | T4 | Use the full 40-char commit SHA for `nix-lefthook-ci-action` in `ci.yml` (no tagged releases exist on the action repo) |
 | `x` | T5 | Add `yamllint` lefthook wrapper to `flake.nix` (yamllint is in devShell packages and lefthook remotes, but missing from `lefthookWrappersFor`) |
 | `x` | T6 | Add automated upstream version tracking — detect when cavemem publishes a new npm version and open a PR to bump `version`, `src.hash`, and `npmDepsHash` |
-| `.` | T7 | Add `markdownlint` to the lefthook pre-commit checks (config exists in `.markdownlint.yml` but no hook is wired) |
+| `x` | T7 | Add `markdownlint` to the lefthook pre-commit checks (config exists in `.markdownlint.yml` but no hook is wired) |
 | `.` | T8 | Add macOS ARM (`macos-latest-xlarge` or similar) CI job for full `aarch64-darwin` coverage |
 | `.` | T9 | Add `git-no-local-paths` lefthook wrapper to `flake.nix` (in lefthook remotes and devShell but missing from `lefthookWrappersFor`) |
 | `.` | T10 | Consider extracting the `lefthookWrappersFor` pattern into a shared flake utility since it is repeated across multiple `pr0d1r2/nix-*` projects |
@@ -90,7 +90,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 ## §B — Bugs / Known Issues
 
 1. **Missing lefthook wrappers**: The `lefthookWrappersFor` function in `flake.nix` does not include wrappers for `deadnix`, `yamllint`, or `git-no-local-paths`, even though these tools are in the devShell packages and have lefthook remote configs in `lefthook.yml`. The hooks will only work if these tools happen to be on `$PATH` outside the Nix shell.
-2. **No `markdownlint` hook or package**: `.markdownlint.yml` exists but `markdownlint` is neither in devShell packages nor wired as a lefthook hook — the config file is dead weight.
+2. ~~**No `markdownlint` hook or package**~~: Fixed by T7 — markdownlint is now in devShell packages, wired as a lefthook remote hook, and has a wrapper in `lefthookWrappersFor`.
 3. **Hardcoded upstream version**: The cavemem version (`0.1.3`) is specified in three places — `cavemem.nix`, `package.json`, and `package-lock.json` — with no single source of truth or automated update mechanism. A version bump requires coordinated edits plus hash recalculation.
 4. **`ci.yml` uses `actions/checkout@v6`; `update-pins.yml` uses `actions/checkout@v4`**: Inconsistent action versions across workflows; `update-pins.yml` should be updated to v6 for consistency.
 5. **No runtime test**: CI builds the package but never runs it — a failing `dist/index.js` (e.g., missing native module) would not be caught until a user tries `nix run`.

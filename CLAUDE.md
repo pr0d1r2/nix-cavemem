@@ -17,7 +17,7 @@ nix flake check      # validate the flake (runs on all supported systems)
 nix develop          # enter dev shell (auto-installs lefthook hooks)
 ```
 
-The dev shell provides: cavemem, nixfmt, statix, deadnix, yamllint, typos, editorconfig-checker, lefthook, and all lefthook wrapper scripts.
+The dev shell provides: cavemem, nixfmt, statix, deadnix, markdownlint, yamllint, typos, editorconfig-checker, lefthook, and all lefthook wrapper scripts.
 
 ## Lint / Pre-commit
 
@@ -35,6 +35,7 @@ Hooks enforced:
 - **nix-no-embedded-shell** — no inline shell scripts in `.nix` files
 - **nix-flake-check** — `nix flake check` must pass
 - **editorconfig-checker** — `.editorconfig` compliance
+- **markdownlint** — Markdown linting (`.markdownlint.yml`)
 - **yamllint** — YAML linting
 - **typos** — spell checking
 - **trailing-whitespace** — no trailing whitespace
@@ -70,7 +71,7 @@ lefthook run pre-commit  # all lint checks
 | `cavemem.nix` | `buildNpmPackage` derivation for cavemem |
 | `package.json` | npm metadata overlaid onto upstream tarball |
 | `package-lock.json` | Locked npm dependency tree (drives `npmDepsHash`) |
-| `lefthook.yml` | Pre-commit hook configuration (12 remote hooks) |
+| `lefthook.yml` | Pre-commit hook configuration (13 remote hooks) |
 | `dev.sh` | Dev shell hook: sets `NIX_CONFIG`, auto-installs lefthook |
 | `scripts/update-upstream.sh` | Upstream version bump: updates hashes and package files |
 
