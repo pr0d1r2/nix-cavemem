@@ -8,7 +8,7 @@ nix-cavemem is a Nix flake that packages [cavemem](https://github.com/JuliusBrus
 
 1. `nix flake check` must pass — enforced by CI and the `nix-lefthook-nix-flake-check` pre-commit hook.
 2. The package must build on all four supported systems: `aarch64-darwin`, `x86_64-darwin`, `x86_64-linux`, `aarch64-linux`.
-3. CI builds run on `ubuntu-latest` (x86_64), `ubuntu-24.04-arm` (aarch64), and `macos-latest` — ARM and macOS jobs run only on push/dispatch, not on PRs.
+3. CI builds run on `ubuntu-latest` (x86_64), `ubuntu-24.04-arm` (aarch64), `macos-latest`, and `macos-latest-xlarge` (aarch64-darwin) — ARM and macOS jobs run only on push/dispatch, not on PRs.
 4. Pre-commit hooks (via lefthook) enforce: nixfmt formatting, statix linting, deadnix unused-code detection, no embedded shell scripts in Nix files, editorconfig compliance, markdownlint, yamllint, typos, trailing whitespace removal, final newline presence, no git conflict markers, and no local Nix paths.
 5. `package.json` and `package-lock.json` are locally maintained and copied over the upstream npm tarball sources during the `prepared` derivation phase — they must stay in sync with upstream cavemem v0.1.3.
 6. The `npmDepsHash` in `cavemem.nix` must match the locked dependency tree; any `package-lock.json` change requires updating this hash.
@@ -68,7 +68,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 
 | Workflow | Trigger | Purpose |
 |---|---|---|
-| `ci.yml` | push/PR to main, dispatch | Build on Linux x86_64, Linux ARM, macOS; push to cachix |
+| `ci.yml` | push/PR to main, dispatch | Build on Linux x86_64, Linux ARM, macOS (x86_64 + ARM); push to cachix |
 | `update-pins.yml` | daily cron (03:30 UTC), dispatch | Auto-update `nixpkgs-lock` pin via PR |
 | `update-upstream.yml` | daily cron (04:30 UTC), dispatch | Detect new cavemem npm version and open a PR to bump `version`, `src.hash`, `npmDepsHash` |
 
@@ -83,7 +83,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | `x` | T5 | Add `yamllint` lefthook wrapper to `flake.nix` (yamllint is in devShell packages and lefthook remotes, but missing from `lefthookWrappersFor`) |
 | `x` | T6 | Add automated upstream version tracking — detect when cavemem publishes a new npm version and open a PR to bump `version`, `src.hash`, and `npmDepsHash` |
 | `x` | T7 | Add `markdownlint` to the lefthook pre-commit checks (config exists in `.markdownlint.yml` but no hook is wired) |
-| `.` | T8 | Add macOS ARM (`macos-latest-xlarge` or similar) CI job for full `aarch64-darwin` coverage |
+| `x` | T8 | Add macOS ARM (`macos-latest-xlarge` or similar) CI job for full `aarch64-darwin` coverage |
 | `.` | T9 | Add `git-no-local-paths` lefthook wrapper to `flake.nix` (in lefthook remotes and devShell but missing from `lefthookWrappersFor`) |
 | `.` | T10 | Consider extracting the `lefthookWrappersFor` pattern into a shared flake utility since it is repeated across multiple `pr0d1r2/nix-*` projects |
 
