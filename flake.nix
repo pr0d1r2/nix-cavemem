@@ -88,57 +88,23 @@
 
       lefthookWrappersFor =
         pkgs:
-        let
-          wrap =
-            name: src: extra:
-            pkgs.writeShellApplication (
-              {
-                inherit name;
-                text = builtins.readFile "${src}/${name}.sh";
-              }
-              // extra
-            );
-        in
-        [
-          (wrap "lefthook-git-conflict-markers" nix-lefthook-git-conflict-markers-src {
-            runtimeInputs = [ pkgs.gnugrep ];
-          })
-          (wrap "lefthook-git-no-local-paths" nix-lefthook-git-no-local-paths-src {
-            runtimeInputs = [ pkgs.gnugrep ];
-          })
-          (wrap "lefthook-missing-final-newline" nix-lefthook-missing-final-newline-src { })
-          (pkgs.writeShellApplication {
-            name = "lefthook-nix-no-embedded-shell";
-            text = ''
-              SCANNER="${nix-lefthook-nix-no-embedded-shell-src}/scan-nix-no-embedded-shell.sh"
-            ''
-            + builtins.readFile "${nix-lefthook-nix-no-embedded-shell-src}/lefthook-nix-no-embedded-shell.sh";
-          })
-          (wrap "lefthook-statix" nix-lefthook-statix-src {
-            runtimeInputs = [ pkgs.statix ];
-          })
-          (wrap "lefthook-trailing-whitespace" nix-lefthook-trailing-whitespace-src {
-            runtimeInputs = [ pkgs.gnugrep ];
-          })
-          (wrap "lefthook-deadnix" nix-lefthook-deadnix-src {
-            runtimeInputs = [ pkgs.deadnix ];
-          })
-          (wrap "lefthook-editorconfig-checker" nix-lefthook-editorconfig-checker-src {
-            runtimeInputs = [ pkgs.editorconfig-checker ];
-          })
-          (wrap "lefthook-markdownlint" nix-lefthook-markdownlint-src {
-            runtimeInputs = [ pkgs.markdownlint-cli ];
-          })
-          (wrap "lefthook-nixfmt" nix-lefthook-nixfmt-src {
-            runtimeInputs = [ pkgs.nixfmt ];
-          })
-          (wrap "lefthook-typos" nix-lefthook-typos-src {
-            runtimeInputs = [ pkgs.typos ];
-          })
-          (wrap "lefthook-yamllint" nix-lefthook-yamllint-src {
-            runtimeInputs = [ pkgs.yamllint ];
-          })
-        ];
+        import ./lefthook-wrappers.nix {
+          inherit pkgs;
+          sources = {
+            git-conflict-markers = nix-lefthook-git-conflict-markers-src;
+            git-no-local-paths = nix-lefthook-git-no-local-paths-src;
+            missing-final-newline = nix-lefthook-missing-final-newline-src;
+            nix-no-embedded-shell = nix-lefthook-nix-no-embedded-shell-src;
+            statix = nix-lefthook-statix-src;
+            trailing-whitespace = nix-lefthook-trailing-whitespace-src;
+            deadnix = nix-lefthook-deadnix-src;
+            editorconfig-checker = nix-lefthook-editorconfig-checker-src;
+            markdownlint = nix-lefthook-markdownlint-src;
+            nixfmt = nix-lefthook-nixfmt-src;
+            typos = nix-lefthook-typos-src;
+            yamllint = nix-lefthook-yamllint-src;
+          };
+        };
     in
     {
       packages = forAllSystems (pkgs: {

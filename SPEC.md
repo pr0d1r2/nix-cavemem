@@ -50,6 +50,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | `flake.nix` | Nix | Flake definition, inputs, outputs, dev shell |
 | `flake.lock` | JSON | Pinned input revisions |
 | `cavemem.nix` | Nix | Package derivation for cavemem |
+| `lefthook-wrappers.nix` | Nix | Shared utility for creating lefthook wrapper scripts |
 | `package.json` | JSON | npm metadata overlaid onto upstream tarball |
 | `package-lock.json` | JSON | Locked npm dependency tree for `npmDepsHash` |
 | `lefthook.yml` | YAML | Pre-commit hook configuration (13 remote hooks) |
@@ -85,7 +86,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | `x` | T7 | Add `markdownlint` to the lefthook pre-commit checks (config exists in `.markdownlint.yml` but no hook is wired) |
 | `x` | T8 | Add macOS ARM (`macos-latest-xlarge` or similar) CI job for full `aarch64-darwin` coverage |
 | `x` | T9 | Add `git-no-local-paths` lefthook wrapper to `flake.nix` (in lefthook remotes and devShell but missing from `lefthookWrappersFor`) |
-| `.` | T10 | Consider extracting the `lefthookWrappersFor` pattern into a shared flake utility since it is repeated across multiple `pr0d1r2/nix-*` projects |
+| `x` | T10 | Consider extracting the `lefthookWrappersFor` pattern into a shared flake utility since it is repeated across multiple `pr0d1r2/nix-*` projects |
 
 ## §B — Bugs / Known Issues
 
