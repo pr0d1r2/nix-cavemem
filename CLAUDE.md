@@ -66,9 +66,10 @@ lefthook run pre-commit  # all lint checks
 ## Architecture
 
 | File | Purpose |
-|---|---|
-| `flake.nix` | Flake definition, inputs, outputs, dev shell, lefthook wrappers |
+| --- | --- |
+| `flake.nix` | Flake definition, inputs, outputs, dev shell |
 | `cavemem.nix` | `buildNpmPackage` derivation for cavemem |
+| `lefthook-wrappers.nix` | Shared utility: creates lefthook wrapper scripts from `nix-lefthook-*` sources |
 | `package.json` | npm metadata overlaid onto upstream tarball |
 | `package-lock.json` | Locked npm dependency tree (drives `npmDepsHash`) |
 | `lefthook.yml` | Pre-commit hook configuration (13 remote hooks) |
