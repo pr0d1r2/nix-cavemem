@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [ $# -ne 1 ] || [ -z "$1" ]; then
+  echo "Usage: $0 <version>" >&2
+  exit 1
+fi
+
 VERSION="$1"
 TARBALL_URL="https://registry.npmjs.org/cavemem/-/cavemem-${VERSION}.tgz"
 
@@ -8,7 +13,10 @@ TARBALL=$(mktemp)
 WORKDIR=$(mktemp -d)
 trap 'rm -f "$TARBALL"; rm -rf "$WORKDIR"' EXIT
 
-curl -sfL "$TARBALL_URL" -o "$TARBALL"
+if ! curl -sfL "$TARBALL_URL" -o "$TARBALL"; then
+  echo "Failed to download tarball from ${TARBALL_URL}" >&2
+  exit 1
+fi
 SRC_HASH=$(nix hash file "$TARBALL")
 
 tar xzf "$TARBALL" -C "$WORKDIR"
