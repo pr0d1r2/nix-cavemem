@@ -98,4 +98,4 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 7. ~~**`ci.yml` referenced non-existent `@v1` tag on `nix-lefthook-ci-action`**~~: Fixed by pinning to the latest commit SHA `ce9a118b05e90e186dba48a82067adeed185f7d4` (2026-07-02).
 8. ~~**`ci.yml` used shortened commit SHA for `nix-lefthook-ci-action`**~~: Fixed by using the full SHA `ce9a118b05e90e186dba48a82067adeed185f7d4` (2026-07-02).
 9. **No `update-pins.yml` workflow**: §V item 9 and §I reference a daily cron job to auto-update the `nixpkgs-lock` pin, but no such workflow exists. The `flake.lock` entry for `nixpkgs-lock` is only updated manually via `nix flake update`.
-10. **`update-upstream.sh` lacked input validation**: The script did not check for a missing version argument or report tarball download failures. Fixed — the script now validates its argument and reports curl errors.
+10. ~~**`update-upstream.sh` lacked input validation**~~: The script did not check for a missing version argument or report tarball download failures. Fixed — the script now validates its argument and reports curl errors.
