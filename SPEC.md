@@ -14,7 +14,7 @@ nix-cavemem is a Nix flake that packages [cavemem](https://github.com/JuliusBrus
 6. The `npmDepsHash` in `cavemem.nix` must match the locked dependency tree; any `package-lock.json` change requires updating this hash.
 7. All files use UTF-8 encoding, LF line endings, 2-space indentation, trimmed trailing whitespace, and a final newline (`.editorconfig`).
 8. Markdown line length is unrestricted (`MD013: false`); YAML truthy key checks are disabled and line-length rules are off.
-9. The flake pins nixpkgs via `pr0d1r2/nixpkgs-lock` (currently `nixos-25.11`); a daily GitHub Actions cron job auto-updates this pin.
+9. The flake pins nixpkgs via `pr0d1r2/nixpkgs-lock` (currently `nixos-25.11`); the pin is updated manually via `nix flake update`.
 10. The cachix substituter and public key are declared in `nixConfig` so users get pre-built binaries by default.
 
 ## §I — Interfaces
@@ -69,8 +69,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 
 | Workflow | Trigger | Purpose |
 | --- | --- | --- |
-| `ci.yml` | push/PR to main, dispatch | Build on Linux x86_64, Linux ARM, macOS (x86_64 + ARM); push to cachix |
-| `update-pins.yml` | daily cron (03:30 UTC), dispatch | Auto-update `nixpkgs-lock` pin via PR |
+| `ci.yml` | push/PR to main, dispatch | Build on Linux x86_64, Linux ARM, macOS; push to cachix |
 | `update-upstream.yml` | daily cron (04:30 UTC), dispatch | Detect new cavemem npm version and open a PR to bump `version`, `src.hash`, `npmDepsHash` |
 
 ## §T — Tasks
@@ -93,8 +92,10 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 1. ~~**Missing lefthook wrappers**~~: Fixed by T3, T5, and T9 — `deadnix`, `yamllint`, and `git-no-local-paths` now all have wrappers in `lefthookWrappersFor`.
 2. ~~**No `markdownlint` hook or package**~~: Fixed by T7 — markdownlint is now in devShell packages, wired as a lefthook remote hook, and has a wrapper in `lefthookWrappersFor`.
 3. **Hardcoded upstream version**: The cavemem version (`0.1.3`) is specified in three places — `cavemem.nix`, `package.json`, and `package-lock.json` — with no single source of truth or automated update mechanism. A version bump requires coordinated edits plus hash recalculation.
-4. **`ci.yml` uses `actions/checkout@v6`; `update-pins.yml` uses `actions/checkout@v4`**: Inconsistent action versions across workflows; `update-pins.yml` should be updated to v6 for consistency.
-5. **No runtime test**: CI builds the package but never runs it — a failing `dist/index.js` (e.g., missing native module) would not be caught until a user tries `nix run`.
+4. ~~**`ci.yml` uses `actions/checkout@v6`; `update-pins.yml` uses `actions/checkout@v4`**~~: The `update-pins.yml` workflow does not exist in the repo (§I referenced it, now corrected). GitHub Actions in `ci.yml` and `update-upstream.yml` updated to latest versions (checkout v7, install-nix-action v31, setup-node v6).
+5. ~~**No runtime test**~~: Fixed — `ci.yml` now includes a smoke test (`nix build && ./result/bin/cavemem --help`) on all three platforms.
 6. **`devShells.ci` is just an alias**: `ci = default` means the CI shell pulls in developer-only tools (lefthook wrappers, editorconfig-checker, etc.) that are unused in the CI build job. A leaner CI-specific shell would reduce closure size and build time.
-7. **`ci.yml` referenced non-existent `@v1` tag on `nix-lefthook-ci-action`**: T4 changed the action ref from a commit SHA to `@v1`, but no tags exist on the `nix-lefthook-ci-action` repo. CI failed with `Unable to resolve action … unable to find version v1`. Fixed by pinning to the latest commit SHA `ce9a118` (2026-07-02).
-8. **`ci.yml` used shortened commit SHA for `nix-lefthook-ci-action`**: The fix for B7 pinned to shortened SHA `ce9a118` (7 chars), but GitHub Actions requires the full 40-character commit SHA. CI failed with `the provided ref … is the shortened version of a commit SHA, which is not supported`. Fixed by using the full SHA `ce9a118b05e90e186dba48a82067adeed185f7d4` (2026-07-02).
+7. ~~**`ci.yml` referenced non-existent `@v1` tag on `nix-lefthook-ci-action`**~~: Fixed by pinning to the latest commit SHA `ce9a118b05e90e186dba48a82067adeed185f7d4` (2026-07-02).
+8. ~~**`ci.yml` used shortened commit SHA for `nix-lefthook-ci-action`**~~: Fixed by using the full SHA `ce9a118b05e90e186dba48a82067adeed185f7d4` (2026-07-02).
+9. **No `update-pins.yml` workflow**: §V item 9 and §I reference a daily cron job to auto-update the `nixpkgs-lock` pin, but no such workflow exists. The `flake.lock` entry for `nixpkgs-lock` is only updated manually via `nix flake update`.
+10. ~~**`update-upstream.sh` lacked input validation**~~: The script did not check for a missing version argument or report tarball download failures. Fixed — the script now validates its argument and reports curl errors.
