@@ -76,6 +76,9 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 
 | status | id | goal |
 | --- | --- | --- |
+| ` ` | T11 | Inline the `ci` devShell as its own `pkgs.mkShell` instead of aliasing `default` (§B6; `flake.nix:133` `ci = default`) — duplicate the full package list so each shell can be trimmed independently |
+| ` ` | T12 | Remove lefthook wrapper packages from the inlined `ci` devShell (§B6; `flake.nix:130` `lefthookWrappersFor`) — CI uses `skip-lefthook: 'true'` (`ci.yml:19`) so wrappers are unused |
+| ` ` | T13 | Remove dev-only linter packages from the `ci` devShell (§B6; `deadnix`, `editorconfig-checker`, `markdownlint-cli`, `nixfmt`, `statix`, `typos`, `yamllint`) — CI only runs `nix build` + smoke test (`ci.yml:22-23`), not lint checks |
 | `x` | T1 | Add a `CLAUDE.md` with build/lint/test commands and project conventions |
 | `x` | T2 | Add `nix build` / `nix flake check` smoke test to CI that validates the built binary runs (`cavemem --help`) |
 | `x` | T3 | Add a `deadnix` lefthook wrapper to `flake.nix` (deadnix is in devShell packages and lefthook remotes, but missing from the `lefthookWrappersFor` list) |
