@@ -68,7 +68,7 @@ jobs:
           git checkout -b "$BRANCH"
           git add cavemem.nix package.json package-lock.json
           git commit -m "bump cavemem ${CURRENT} -> ${LATEST}"
-          git push origin "$BRANCH"
+          git push --force-with-lease origin "$BRANCH"
           gh pr create \
             --title "bump cavemem ${CURRENT} -> ${LATEST}" \
             --body "Automated upstream version bump: cavemem ${CURRENT} -> ${LATEST}." \
