@@ -65,6 +65,7 @@ jobs:
           BRANCH="update-cavemem-${LATEST}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin "refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" 2>/dev/null || true
           git checkout -b "$BRANCH"
           git add cavemem.nix package.json package-lock.json
           git commit -m "bump cavemem ${CURRENT} -> ${LATEST}"
