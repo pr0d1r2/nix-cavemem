@@ -1,10 +1,10 @@
 { pkgs }:
 let
-  version = "0.1.3";
+  version = "0.2.1";
 
   src = pkgs.fetchurl {
     url = "https://registry.npmjs.org/cavemem/-/cavemem-${version}.tgz";
-    hash = "sha256-Lg3jslcOak/WDBLhseZ64x5/IlKvzsAKsNYHgB+Vwd4=";
+    hash = "sha256-3l9XfsEs2gwQ4lyyv0dgFV8CILmrQBupTh5wSWLa4y0=";
   };
 
   prepared = pkgs.stdenvNoCC.mkDerivation {
@@ -28,7 +28,7 @@ pkgs.buildNpmPackage {
 
   src = prepared;
 
-  npmDepsHash = "sha256-ZS6r5xGhn7wLFakMp8k81GzReUEE6XSRSskiyPFm6gA=";
+  npmDepsHash = "sha256-HbL4HaDwe6RqZY8puhWmvq9dIAsK0HimwvjLzq2bByY=";
 
   dontNpmBuild = true;
 
