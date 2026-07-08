@@ -76,9 +76,13 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 
 | status | id | goal |
 | --- | --- | --- |
-| ` ` | T11 | Inline the `ci` devShell as its own `pkgs.mkShell` instead of aliasing `default` (§B6; `flake.nix:133` `ci = default`) — duplicate the full package list so each shell can be trimmed independently |
-| ` ` | T12 | Remove lefthook wrapper packages from the inlined `ci` devShell (§B6; `flake.nix:130` `lefthookWrappersFor`) — CI uses `skip-lefthook: 'true'` (`ci.yml:19`) so wrappers are unused |
-| ` ` | T13 | Remove dev-only linter packages from the `ci` devShell (§B6; `deadnix`, `editorconfig-checker`, `markdownlint-cli`, `nixfmt`, `statix`, `typos`, `yamllint`) — CI only runs `nix build` + smoke test (`ci.yml:22-23`), not lint checks |
+| ` ` | T14 | Inline the `ci` devShell as a duplicate `pkgs.mkShell` — pure refactor, no behavior change (§B6; `flake.nix:114` `rec {`, `flake.nix:133` `ci = default`): remove `rec`, replace `ci = default` with a second `pkgs.mkShell` call containing the identical `packages` list and `shellHook`; verify `nix flake check` passes |
+| ` ` | T15 | Remove `shellHook` from the inlined `ci` devShell (§B6; `flake.nix:131` `shellHook = builtins.readFile ./dev.sh`): CI does not use the dev shell hook (`dev.sh` auto-installs lefthook and sets `NIX_CONFIG`, neither needed in CI) |
+| ` ` | T16 | Remove `lefthookWrappersFor pkgs` from the `ci` devShell's `packages` list (§B6; `flake.nix:130` `++ (lefthookWrappersFor pkgs)`): CI passes `skip-lefthook: 'true'` (`ci.yml:19`) so wrapper scripts are never invoked |
+| ` ` | T17 | Remove dev-only linter packages from the `ci` devShell's `packages` list (§B6; `deadnix`, `editorconfig-checker`, `markdownlint-cli`, `nixfmt`, `statix`, `typos`, `yamllint`): CI only runs `nix build` + smoke test (`ci.yml:22-23`), not lint checks; keep `coreutils`, `git`, `lefthook`, `nix`, and the cavemem package |
+| `~` | T11 | ~~Inline the `ci` devShell as its own `pkgs.mkShell` instead of aliasing `default`~~ (superseded by T14) |
+| `~` | T12 | ~~Remove lefthook wrapper packages from the inlined `ci` devShell~~ (superseded by T16) |
+| `~` | T13 | ~~Remove dev-only linter packages from the `ci` devShell~~ (superseded by T17) |
 | `x` | T1 | Add a `CLAUDE.md` with build/lint/test commands and project conventions |
 | `x` | T2 | Add `nix build` / `nix flake check` smoke test to CI that validates the built binary runs (`cavemem --help`) |
 | `x` | T3 | Add a `deadnix` lefthook wrapper to `flake.nix` (deadnix is in devShell packages and lefthook remotes, but missing from the `lefthookWrappersFor` list) |
