@@ -1,7 +1,6 @@
 {
   "name": "cavemem",
-  "version": "0.1.3",
-  "license": "MIT",
+  "version": "0.2.1",
   "description": "Cross-agent persistent memory with compressed storage. Plug-and-play memory for Claude Code, Gemini CLI, OpenCode, Codex, and Cursor.",
   "keywords": [
     "memory",
@@ -15,6 +14,7 @@
     "compression",
     "llm"
   ],
+  "license": "MIT",
   "author": "Julius Brussee",
   "homepage": "https://github.com/JuliusBrussee/cavemem",
   "repository": {
@@ -29,20 +29,15 @@
   },
   "type": "module",
   "bin": {
-    "cavemem": "./dist/index.js"
+    "cavemem": "dist/index.js"
   },
-  "main": "./dist/index.js",
-  "files": ["dist", "hooks-scripts", "README.md", "LICENSE"],
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit",
-    "stage-publish": "node scripts/prepack.mjs",
-    "prepublishOnly": "node scripts/prepack.mjs",
-    "pack:release": "pnpm build && node scripts/pack-release.mjs",
-    "publish:release": "pnpm pack:release && npm publish ./release --access public"
-  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "hooks-scripts",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "commander": "^12.1.0",
     "kleur": "^4.1.5",
@@ -50,15 +45,5 @@
     "hono": "^4.6.10",
     "@hono/node-server": "^1.13.7",
     "@modelcontextprotocol/sdk": "^1.0.0"
-  },
-  "optionalDependencies": {
-  },
-  "devDependencies": {
-    "tsup": "^8.3.5",
-    "typescript": "^5.6.3",
-    "vitest": "^2.1.5"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }
