@@ -2,14 +2,22 @@
 
 ## §D — Description
 
-nix-cavemem is a Nix flake that packages [cavemem](https://github.com/JuliusBrussee/cavemem) (v0.1.3), a cross-agent persistent memory tool with compressed storage designed for AI coding assistants (Claude Code, Gemini CLI, OpenCode, Codex, Cursor). The flake fetches the npm tarball, builds it with `buildNpmPackage`, and serves pre-built binaries via a cachix binary cache (`pr0d1r2.cachix.org`). It targets NixOS and macOS users who want a reproducible, declarative way to install cavemem as a flake input or via `nix run`, without compiling native SQLite bindings from source.
+nix-cavemem is a Nix flake that packages
+[cavemem](https://github.com/JuliusBrussee/cavemem) (v0.1.3),
+a cross-agent persistent memory tool with compressed storage designed
+for AI coding assistants (Claude Code, Gemini CLI, OpenCode, Codex,
+Cursor). The flake fetches the npm tarball, builds it with
+`buildNpmPackage`, and serves pre-built binaries via a cachix binary
+cache (`pr0d1r2.cachix.org`). It targets NixOS and macOS users who want
+a reproducible, declarative way to install cavemem as a flake input or
+via `nix run`, without compiling native SQLite bindings from source.
 
 ## §V — Invariants
 
 1. `nix flake check` must pass — enforced by CI and the `nix-lefthook-nix-flake-check` pre-commit hook.
 2. The package must build on all four supported systems: `aarch64-darwin`, `x86_64-darwin`, `x86_64-linux`, `aarch64-linux`.
 3. CI builds run on `ubuntu-latest` (x86_64), `ubuntu-24.04-arm` (aarch64), and `macos-latest` (aarch64-darwin) — ARM and macOS jobs run only on push/dispatch, not on PRs.
-4. Pre-commit hooks (via lefthook) enforce: nixfmt formatting, statix linting, deadnix unused-code detection, no embedded shell scripts in Nix files, editorconfig compliance, markdownlint, yamllint, typos, trailing whitespace removal, final newline presence, no git conflict markers, and no local Nix paths.
+4. Pre-commit hooks (via lefthook) enforce: nixfmt, statix, deadnix, no embedded shell in Nix files, editorconfig, markdownlint, yamllint, typos, trailing whitespace, final newline, no git conflict markers, and no local Nix paths.
 5. `package.json` and `package-lock.json` are locally maintained and copied over the upstream npm tarball sources during the `prepared` derivation phase — they must stay in sync with upstream cavemem v0.1.3.
 6. The `npmDepsHash` in `cavemem.nix` must match the locked dependency tree; any `package-lock.json` change requires updating this hash.
 7. All files use UTF-8 encoding, LF line endings, 2-space indentation, trimmed trailing whitespace, and a final newline (`.editorconfig`).
@@ -76,10 +84,10 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 
 | status | id | goal |
 | --- | --- | --- |
-| ` ` | T14 | Inline the `ci` devShell as a duplicate `pkgs.mkShell` — pure refactor, no behavior change (§B6; `flake.nix:114` `rec {`, `flake.nix:133` `ci = default`): remove `rec`, replace `ci = default` with a second `pkgs.mkShell` call containing the identical `packages` list and `shellHook`; verify `nix flake check` passes |
+| ` ` | T14 | Inline the `ci` devShell as a duplicate `pkgs.mkShell` — pure refactor, no behavior change (§B6): remove `rec`, replace `ci = default` with a second `pkgs.mkShell` call; verify `nix flake check` passes |
 | ` ` | T15 | Remove `shellHook` from the inlined `ci` devShell (§B6; `flake.nix:131` `shellHook = builtins.readFile ./dev.sh`): CI does not use the dev shell hook (`dev.sh` auto-installs lefthook and sets `NIX_CONFIG`, neither needed in CI) |
 | ` ` | T16 | Remove `lefthookWrappersFor pkgs` from the `ci` devShell's `packages` list (§B6; `flake.nix:130` `++ (lefthookWrappersFor pkgs)`): CI passes `skip-lefthook: 'true'` (`ci.yml:19`) so wrapper scripts are never invoked |
-| ` ` | T17 | Remove dev-only linter packages from the `ci` devShell's `packages` list (§B6; `deadnix`, `editorconfig-checker`, `markdownlint-cli`, `nixfmt`, `statix`, `typos`, `yamllint`): CI only runs `nix build` + smoke test (`ci.yml:22-23`), not lint checks; keep `coreutils`, `git`, `lefthook`, `nix`, and the cavemem package |
+| ` ` | T17 | Remove dev-only linter packages from the `ci` devShell's `packages` list (§B6): CI only runs `nix build` + smoke test, not lint checks; keep `coreutils`, `git`, `lefthook`, `nix`, and the cavemem package |
 | `~` | T11 | ~~Inline the `ci` devShell as its own `pkgs.mkShell` instead of aliasing `default`~~ (superseded by T14) |
 | `~` | T12 | ~~Remove lefthook wrapper packages from the inlined `ci` devShell~~ (superseded by T16) |
 | `~` | T13 | ~~Remove dev-only linter packages from the `ci` devShell~~ (superseded by T17) |
@@ -99,10 +107,11 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 1. ~~**Missing lefthook wrappers**~~: Fixed by T3, T5, and T9 — `deadnix`, `yamllint`, and `git-no-local-paths` now all have wrappers in `lefthookWrappersFor`.
 2. ~~**No `markdownlint` hook or package**~~: Fixed by T7 — markdownlint is now in devShell packages, wired as a lefthook remote hook, and has a wrapper in `lefthookWrappersFor`.
 3. **Hardcoded upstream version**: The cavemem version (`0.1.3`) is specified in three places — `cavemem.nix`, `package.json`, and `package-lock.json` — with no single source of truth or automated update mechanism. A version bump requires coordinated edits plus hash recalculation.
-4. ~~**`ci.yml` uses `actions/checkout@v6`; `update-pins.yml` uses `actions/checkout@v4`**~~: The `update-pins.yml` workflow does not exist in the repo (§I referenced it, now corrected). GitHub Actions in `ci.yml` and `update-upstream.yml` updated to latest versions (checkout v7, install-nix-action v31, setup-node v6).
+4. ~~**`ci.yml` uses `actions/checkout@v6`; `update-pins.yml` uses `actions/checkout@v4`**~~: The `update-pins.yml` workflow does not exist in the repo. GitHub Actions updated to latest versions.
 5. ~~**No runtime test**~~: Fixed — `ci.yml` now includes a smoke test (`nix build && ./result/bin/cavemem --help`) on all three platforms.
 6. **`devShells.ci` is just an alias**: `ci = default` means the CI shell pulls in developer-only tools (lefthook wrappers, editorconfig-checker, etc.) that are unused in the CI build job. A leaner CI-specific shell would reduce closure size and build time.
 7. ~~**`ci.yml` referenced non-existent `@v1` tag on `nix-lefthook-ci-action`**~~: Fixed by pinning to the latest commit SHA `ce9a118b05e90e186dba48a82067adeed185f7d4` (2026-07-02).
 8. ~~**`ci.yml` used shortened commit SHA for `nix-lefthook-ci-action`**~~: Fixed by using the full SHA `ce9a118b05e90e186dba48a82067adeed185f7d4` (2026-07-02).
 9. **No `update-pins.yml` workflow**: §V item 9 and §I reference a daily cron job to auto-update the `nixpkgs-lock` pin, but no such workflow exists. The `flake.lock` entry for `nixpkgs-lock` is only updated manually via `nix flake update`.
 10. ~~**`update-upstream.sh` lacked input validation**~~: The script did not check for a missing version argument or report tarball download failures. Fixed — the script now validates its argument and reports curl errors.
+11. ~~**Migration left confirm app without wrapper packages**~~: Unused `nix-lefthook-*-src` inputs (deadnix); confirm app missing wrapper packages (coherence). Fixed: removed inputs, added `mat.packages` to confirm, added seed files, deleted `lefthook-wrappers.nix`.

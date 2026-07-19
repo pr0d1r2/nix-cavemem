@@ -11,55 +11,6 @@
     nixpkgs.follows = "nixpkgs-lock/nixpkgs";
 
     set-and-setting.url = "github:pr0d1r2/set-and-setting";
-
-    nix-lefthook-deadnix-src = {
-      url = "github:pr0d1r2/nix-lefthook-deadnix";
-      flake = false;
-      };
-    nix-lefthook-editorconfig-checker-src = {
-      url = "github:pr0d1r2/nix-lefthook-editorconfig-checker";
-      flake = false;
-      };
-    nix-lefthook-git-conflict-markers-src = {
-      url = "github:pr0d1r2/nix-lefthook-git-conflict-markers";
-      flake = false;
-      };
-    nix-lefthook-git-no-local-paths-src = {
-      url = "github:pr0d1r2/nix-lefthook-git-no-local-paths";
-      flake = false;
-      };
-    nix-lefthook-markdownlint-src = {
-      url = "github:pr0d1r2/nix-lefthook-markdownlint";
-      flake = false;
-      };
-    nix-lefthook-missing-final-newline-src = {
-      url = "github:pr0d1r2/nix-lefthook-missing-final-newline";
-      flake = false;
-      };
-    nix-lefthook-nixfmt-src = {
-      url = "github:pr0d1r2/nix-lefthook-nixfmt";
-      flake = false;
-      };
-    nix-lefthook-nix-no-embedded-shell-src = {
-      url = "github:pr0d1r2/nix-lefthook-nix-no-embedded-shell";
-      flake = false;
-      };
-    nix-lefthook-statix-src = {
-      url = "github:pr0d1r2/nix-lefthook-statix";
-      flake = false;
-      };
-    nix-lefthook-trailing-whitespace-src = {
-      url = "github:pr0d1r2/nix-lefthook-trailing-whitespace";
-      flake = false;
-      };
-    nix-lefthook-typos-src = {
-      url = "github:pr0d1r2/nix-lefthook-typos";
-      flake = false;
-      };
-    nix-lefthook-yamllint-src = {
-      url = "github:pr0d1r2/nix-lefthook-yamllint";
-      flake = false;
-      };
   };
 
   outputs =
@@ -67,18 +18,6 @@
       self,
       nixpkgs,
       set-and-setting,
-      nix-lefthook-deadnix-src,
-      nix-lefthook-editorconfig-checker-src,
-      nix-lefthook-git-conflict-markers-src,
-      nix-lefthook-git-no-local-paths-src,
-      nix-lefthook-markdownlint-src,
-      nix-lefthook-missing-final-newline-src,
-      nix-lefthook-nixfmt-src,
-      nix-lefthook-nix-no-embedded-shell-src,
-      nix-lefthook-statix-src,
-      nix-lefthook-trailing-whitespace-src,
-      nix-lefthook-typos-src,
-      nix-lefthook-yamllint-src,
       ...
     }:
     let
@@ -142,32 +81,39 @@
         }
       );
 
-      apps = forAllSystems (pkgs: {
-        confirm = {
-          type = "app";
-          program = "${
-            pkgs.writeShellApplication {
-              name = "confirm";
-              runtimeInputs = [
-                pkgs.coreutils
-                pkgs.diffutils
-                pkgs.findutils
-                pkgs.gawk
-                pkgs.git
-                pkgs.gnugrep
-              ];
-              text = ''
-                export FRAGMENTS_DIR="${set-and-setting}/setting/integrations/lefthook"
-                export ASSEMBLE_SCRIPT="${set-and-setting}/setting/lib/assemble-lefthook.sh"
-                export DETECT_SCRIPT="${set-and-setting}/setting/lib/detect-fragments.sh"
-                export SETTING_SRC="${self.packages.${pkgs.stdenv.hostPlatform.system}.setting}"
-                export CONFIRM_SCRIPT="${set-and-setting}/lib/confirm.sh"
-                export CONFIRM_REV="${set-and-setting.rev or "unknown"}"
-                bash "$CONFIRM_SCRIPT"
-              '';
-            }
-          }/bin/confirm";
-        };
-      });
+      apps = forAllSystems (
+        pkgs:
+        let
+          mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
+        in
+        {
+          confirm = {
+            type = "app";
+            program = "${
+              pkgs.writeShellApplication {
+                name = "confirm";
+                runtimeInputs = [
+                  pkgs.coreutils
+                  pkgs.diffutils
+                  pkgs.findutils
+                  pkgs.gawk
+                  pkgs.git
+                  pkgs.gnugrep
+                ]
+                ++ mat.packages;
+                text = ''
+                  export FRAGMENTS_DIR="${set-and-setting}/setting/integrations/lefthook"
+                  export ASSEMBLE_SCRIPT="${set-and-setting}/setting/lib/assemble-lefthook.sh"
+                  export DETECT_SCRIPT="${set-and-setting}/setting/lib/detect-fragments.sh"
+                  export SETTING_SRC="${self.packages.${pkgs.stdenv.hostPlatform.system}.setting}"
+                  export CONFIRM_SCRIPT="${set-and-setting}/lib/confirm.sh"
+                  export CONFIRM_REV="${set-and-setting.rev or "unknown"}"
+                  bash "$CONFIRM_SCRIPT"
+                '';
+              }
+            }/bin/confirm";
+          };
+        }
+      );
     };
 }
