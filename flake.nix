@@ -1,5 +1,5 @@
 {
-  description = "CHANGEME";
+  description = "Nix flake packaging cavemem — cross-agent persistent memory with compressed storage";
 
   nixConfig = {
     extra-substituters = [ "https://pr0d1r2.cachix.org" ];
@@ -41,6 +41,7 @@
     in
     {
       packages = forAllSystems (pkgs: {
+        default = import ./cavemem.nix { inherit pkgs; };
         setting = (set-and-setting.lib.mkSetting { inherit pkgs; }).materialized;
       });
 
