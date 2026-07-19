@@ -1,5 +1,5 @@
 {
-  description = "Nix flake packaging cavemem — cross-agent persistent memory with compressed storage";
+  description = "Nix flake packaging cavemem -- cross-agent persistent memory with compressed storage";
 
   nixConfig = {
     extra-substituters = [ "https://pr0d1r2.cachix.org" ];
