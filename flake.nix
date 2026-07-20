@@ -50,25 +50,31 @@
         let
           mat = set-and-setting.lib.materializationFor { inherit pkgs fragments; };
           sys = pkgs.stdenv.hostPlatform.system;
+          shells = set-and-setting.lib.mkDevShells {
+            inherit pkgs;
+            basePackages = mat.packages;
+            settingHook = ''
+              ${self.packages.${sys}.setting}/bin/sync-setting .
+              _assemble_out="$(mktemp -d)"
+              FRAGMENTS="${builtins.concatStringsSep " " fragments}" \
+                out="$_assemble_out" \
+                FRAGMENTS_DIR="${set-and-setting}/setting/integrations/lefthook" \
+                bash "${set-and-setting}/setting/lib/assemble-lefthook.sh"
+              cp -f "$_assemble_out/lefthook.yml" lefthook.yml
+              rm -rf "$_assemble_out"
+            '';
+          };
         in
-        set-and-setting.lib.mkDevShells {
-          inherit pkgs;
-          basePackages = mat.packages;
-          settingHook = ''
-            ${self.packages.${sys}.setting}/bin/sync-setting .
-            _assemble_out="$(mktemp -d)"
-            FRAGMENTS="${builtins.concatStringsSep " " fragments}" \
-              out="$_assemble_out" \
-              FRAGMENTS_DIR="${set-and-setting}/setting/integrations/lefthook" \
-              bash "${set-and-setting}/setting/lib/assemble-lefthook.sh"
-            cp -f "$_assemble_out/lefthook.yml" lefthook.yml
-            rm -rf "$_assemble_out"
-          '';
-        }
+        shells // { ci = shells.default; }
       );
 
       checks = forAllSystems (
         pkgs:
+        let
+          sys = pkgs.stdenv.hostPlatform.system;
+        in
+        assert self.devShells.${sys} ? ci;
+        assert self.devShells.${sys}.ci.drvPath == self.devShells.${sys}.default.drvPath;
         (set-and-setting.lib.checksFor {
           inherit pkgs fragments;
           src = ./.;
@@ -78,6 +84,7 @@
             inherit pkgs;
             projectRoot = ./.;
           };
+          public-interface = pkgs.runCommand "public-interface-check" { } "touch $out";
           default = pkgs.runCommand "checks" { } "touch $out";
         }
       );
