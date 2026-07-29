@@ -31,8 +31,9 @@ via `nix run`, without compiling native SQLite bindings from source.
 
 ```nix
 packages.${system}.default  # cavemem binary (Node.js CLI)
+packages.${system}.setting  # materialized setting package
 devShells.${system}.default  # development shell with all tools
-devShells.${system}.ci       # alias for default (used in CI)
+devShells.${system}.agentic  # agentic variant of the dev shell
 ```
 
 ### CLI (provided by upstream cavemem)
@@ -116,3 +117,4 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 10. ~~**`update-upstream.sh` lacked input validation**~~: The script did not check for a missing version argument or report tarball download failures. Fixed — the script now validates its argument and reports curl errors.
 11. ~~**Migration left confirm app without wrapper packages**~~: Unused `nix-lefthook-*-src` inputs (deadnix); confirm app missing wrapper packages (coherence). Fixed: removed inputs, added `mat.packages` to confirm, added seed files, deleted `lefthook-wrappers.nix`.
 12. ~~**Non-ASCII em dash in `flake.nix` description**~~: The `ascii` fragment's `ascii-only-check` rejects non-ASCII characters in source files; `flake.nix` line 2 contained a Unicode em dash. Fixed: replaced with ASCII `--`.
+13. ~~**`set-and-setting.lib` missing after flake update**~~: `nix flake update` bumped `set-and-setting` to a version that removed its `lib` output, breaking all `set-and-setting.lib.*` calls in `flake.nix`. Fixed: migrated `flake.nix` to use `mk-consumer-flake.nix` from the `set-and-setting` store path, passing the inner dependency (which retains `lib`) via `inherit (set-and-setting.inputs) set-and-setting`.
