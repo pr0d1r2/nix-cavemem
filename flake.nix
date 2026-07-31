@@ -1,5 +1,5 @@
 {
-  description = "Nix flake packaging cavemem -- cross-agent persistent memory with compressed storage";
+  description = "CHANGEME";
 
   nixConfig = {
     extra-substituters = [ "https://pr0d1r2.cachix.org" ];
@@ -20,13 +20,8 @@
       set-and-setting,
       ...
     }:
-    let
-      supportedSystems = [
-        "aarch64-darwin"
-        "x86_64-darwin"
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
+    set-and-setting.lib.mkConsumerFlake {
+      inherit self nixpkgs set-and-setting;
       fragments = [
         "base"
         "nix"
@@ -35,19 +30,6 @@
         "markdown"
         "yaml"
       ];
-    in
-    (import "${set-and-setting}/set/lib/mk-consumer-flake.nix" {
-      inherit supportedSystems;
-    })
-      {
-        inherit self nixpkgs fragments;
-        inherit (set-and-setting.inputs) set-and-setting;
-        src = ./.;
-        extraPackages = pkgs: {
-          default = import ./cavemem.nix { inherit pkgs; };
-        };
-        extraChecks = _pkgs: {
-          public-interface = _pkgs.runCommand "public-interface-check" { } "touch $out";
-        };
-      };
+      src = ./.;
+    };
 }
