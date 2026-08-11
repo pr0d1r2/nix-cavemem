@@ -3,5 +3,3 @@ result-*
 .direnv
 .claude/settings.local.json
 .direnv/
-.markdownlint.yml
-.yamllint.yml
