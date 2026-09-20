@@ -89,7 +89,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | ` ` | T15 | Remove `shellHook` from the inlined `ci` devShell (§B6; `flake.nix:131` `shellHook = builtins.readFile ./dev.sh`): CI does not use the dev shell hook (`dev.sh` auto-installs lefthook and sets `NIX_CONFIG`, neither needed in CI) |
 | ` ` | T16 | Remove `lefthookWrappersFor pkgs` from the `ci` devShell's `packages` list (§B6; `flake.nix:130` `++ (lefthookWrappersFor pkgs)`): CI passes `skip-lefthook: 'true'` (`ci.yml:19`) so wrapper scripts are never invoked |
 | ` ` | T17 | Remove dev-only linter packages from the `ci` devShell's `packages` list (§B6): CI only runs `nix build` + smoke test, not lint checks; keep `coreutils`, `git`, `lefthook`, `nix`, and the cavemem package |
-| `~` | T11 | ~~Inline the `ci` devShell as its own `pkgs.mkShell` instead of aliasing `default`~~ (superseded by T14) |
+| `x` | T11 | ~~Inline the `ci` devShell as its own `pkgs.mkShell` instead of aliasing `default`~~ (superseded by T14) |
 | `~` | T12 | ~~Remove lefthook wrapper packages from the inlined `ci` devShell~~ (superseded by T16) |
 | `~` | T13 | ~~Remove dev-only linter packages from the `ci` devShell~~ (superseded by T17) |
 | `x` | T1 | Add a `CLAUDE.md` with build/lint/test commands and project conventions |
