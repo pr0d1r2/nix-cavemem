@@ -91,7 +91,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 | ` ` | T17 | Remove dev-only linter packages from the `ci` devShell's `packages` list (§B6): CI only runs `nix build` + smoke test, not lint checks; keep `coreutils`, `git`, `lefthook`, `nix`, and the cavemem package |
 | `x` | T11 | ~~Inline the `ci` devShell as its own `pkgs.mkShell` instead of aliasing `default`~~ (superseded by T14) |
 | `x` | T12 | ~~Remove lefthook wrapper packages from the inlined `ci` devShell~~ (superseded by T16) |
-| `~` | T13 | ~~Remove dev-only linter packages from the `ci` devShell~~ (superseded by T17) |
+| `x` | T13 | ~~Remove dev-only linter packages from the `ci` devShell~~ (superseded by T17) |
 | `x` | T1 | Add a `CLAUDE.md` with build/lint/test commands and project conventions |
 | `x` | T2 | Add `nix build` / `nix flake check` smoke test to CI that validates the built binary runs (`cavemem --help`) |
 | `x` | T3 | Add a `deadnix` lefthook wrapper to `flake.nix` (deadnix is in devShell packages and lefthook remotes, but missing from the `lefthookWrappersFor` list) |
