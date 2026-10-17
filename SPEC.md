@@ -3,7 +3,7 @@
 ## §D — Description
 
 nix-cavemem is a Nix flake that packages
-[cavemem](https://github.com/JuliusBrussee/cavemem) (v0.1.3),
+[cavemem](https://github.com/JuliusBrussee/cavemem) (v0.2.1),
 a cross-agent persistent memory tool with compressed storage designed
 for AI coding assistants (Claude Code, Gemini CLI, OpenCode, Codex,
 Cursor). The flake fetches the npm tarball, builds it with
@@ -18,7 +18,7 @@ via `nix run`, without compiling native SQLite bindings from source.
 2. The package must build on all four supported systems: `aarch64-darwin`, `x86_64-darwin`, `x86_64-linux`, `aarch64-linux`.
 3. CI builds run on `ubuntu-latest` (x86_64), `ubuntu-24.04-arm` (aarch64), and `macos-latest` (aarch64-darwin) — ARM and macOS jobs run only on push/dispatch, not on PRs.
 4. Pre-commit hooks (via lefthook) enforce: nixfmt, statix, deadnix, no embedded shell in Nix files, editorconfig, markdownlint, yamllint, typos, trailing whitespace, final newline, no git conflict markers, and no local Nix paths.
-5. `package.json` and `package-lock.json` are locally maintained and copied over the upstream npm tarball sources during the `prepared` derivation phase — they must stay in sync with upstream cavemem v0.1.3.
+5. `package.json` and `package-lock.json` are locally maintained and copied over the upstream npm tarball sources during the `prepared` derivation phase — they must stay in sync with upstream cavemem v0.2.1.
 6. The `npmDepsHash` in `cavemem.nix` must match the locked dependency tree; any `package-lock.json` change requires updating this hash.
 7. All files use UTF-8 encoding, LF line endings, 2-space indentation, trimmed trailing whitespace, and a final newline (`.editorconfig`).
 8. Markdown line length is unrestricted (`MD013: false`); YAML truthy key checks are disabled and line-length rules are off.
@@ -107,7 +107,7 @@ Single argument `pkgs` (a nixpkgs package set). Returns a `buildNpmPackage` deri
 
 1. ~~**Missing lefthook wrappers**~~: Fixed by T3, T5, and T9 — `deadnix`, `yamllint`, and `git-no-local-paths` now all have wrappers in `lefthookWrappersFor`.
 2. ~~**No `markdownlint` hook or package**~~: Fixed by T7 — markdownlint is now in devShell packages, wired as a lefthook remote hook, and has a wrapper in `lefthookWrappersFor`.
-3. **Hardcoded upstream version**: The cavemem version (`0.1.3`) is specified in three places — `cavemem.nix`, `package.json`, and `package-lock.json` — with no single source of truth or automated update mechanism. A version bump requires coordinated edits plus hash recalculation.
+3. **Hardcoded upstream version**: The cavemem version (`0.2.1`) is specified in three places — `cavemem.nix`, `package.json`, and `package-lock.json` — with no single source of truth or automated update mechanism. A version bump requires coordinated edits plus hash recalculation.
 4. ~~**`ci.yml` uses `actions/checkout@v6`; `update-pins.yml` uses `actions/checkout@v4`**~~: The `update-pins.yml` workflow does not exist in the repo. GitHub Actions updated to latest versions.
 5. ~~**No runtime test**~~: Fixed — `ci.yml` now includes a smoke test (`nix build && ./result/bin/cavemem --help`) on all three platforms.
 6. **`devShells.ci` is just an alias**: `ci = default` means the CI shell pulls in developer-only tools (lefthook wrappers, editorconfig-checker, etc.) that are unused in the CI build job. A leaner CI-specific shell would reduce closure size and build time.
