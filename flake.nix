@@ -1,5 +1,5 @@
 {
-  description = "CHANGEME";
+  description = "Nix package for cavemem";
 
   nixConfig = {
     extra-substituters = [ "https://pr0d1r2.cachix.org" ];
