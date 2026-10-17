@@ -32,5 +32,15 @@
         "yaml"
       ];
       src = ./.;
+      extraPackages = pkgs: {
+        cavemem = import ./cavemem.nix { inherit pkgs; };
+        default = import ./cavemem.nix { inherit pkgs; };
+      };
+      extraChecks = pkgs: {
+        cavemem-package =
+          assert builtins.hasAttr "default" self.packages.${pkgs.system};
+          assert builtins.hasAttr "cavemem" self.packages.${pkgs.system};
+          pkgs.runCommand "cavemem-package-output-check" { } "touch $out";
+      };
     };
 }
