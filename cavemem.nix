@@ -32,6 +32,19 @@ pkgs.buildNpmPackage {
 
   dontNpmBuild = true;
 
+  # node-gyp leaves its build tree next to the compiled better-sqlite3
+  # addon. Its Makefiles and .d files name python3, npm and the node
+  # source, which would otherwise stay in the runtime closure.
+  postInstall = ''
+    build="$out/lib/node_modules/cavemem/node_modules/better-sqlite3/build"
+    find "$build" -type f ! -name '*.node' -delete
+    find "$build" -type d -empty -delete
+  '';
+
+  # Fail the build if the build tree, or anything else, leaks python3
+  # into the runtime closure again.
+  disallowedReferences = [ pkgs.python3 ];
+
   nativeBuildInputs = with pkgs; [
     python3
     pkg-config
