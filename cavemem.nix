@@ -28,7 +28,7 @@ pkgs.buildNpmPackage {
 
   src = prepared;
 
-  npmDepsHash = "sha256-j3+9VYd+4Vc8AafSTwrRHDQR7SQkDQ4p72t2Gc1wlP8=";
+  npmDepsHash = "sha256-6koyMdYm1/2oLdXElBFonnuPohTcYWYpO+u7IFZFe2M=";
 
   dontNpmBuild = true;
 
