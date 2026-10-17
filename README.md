@@ -9,7 +9,7 @@
 > what it may not, and what to check before trusting anything in this tree.
 <!-- hallucinogen:autonomy-disclaimer end -->
 
-[![CI](https://github.com/pr0d1r2/nix-cavemem/actions/workflows/ci.yml/badge.svg)](https://github.com/pr0d1r2/nix-cavemem/actions/workflows/ci.yml)
+[![CI](https://github.com/pr0d1r2/nix-cavemem/actions/workflows/ci.yml/badge.svg)](https://github.com/pr0d1r2/nix-cavemem/actions/workflows/ci.yml) [![NixOS 26.05](https://img.shields.io/badge/NixOS-26.05-blue.svg?logo=nixos)](https://nixos.org)
 
 Nix package for [cavemem](https://github.com/JuliusBrussee/cavemem) — cross-agent persistent memory with compressed storage. Pre-built binaries served via [cachix](https://pr0d1r2.cachix.org).
 
