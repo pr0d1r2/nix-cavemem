@@ -28,9 +28,15 @@ pkgs.buildNpmPackage {
 
   src = prepared;
 
-  npmDepsHash = "sha256-6koyMdYm1/2oLdXElBFonnuPohTcYWYpO+u7IFZFe2M=";
+  npmDepsHash = "sha256-c/RhZr6N8DLlSBct7jcQMQO5jaj0PFxi1QlPFq2IBe8=";
 
   dontNpmBuild = true;
+
+  # better-sqlite3 13 publishes gypfile=false and no install script, so
+  # npm rebuild skips it. Compile the N-API addon explicitly.
+  preInstall = ''
+    npm run build-release --prefix node_modules/better-sqlite3
+  '';
 
   # node-gyp leaves its build tree next to the compiled better-sqlite3
   # addon. Its Makefiles and .d files name python3, npm and the node
