@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 ## Unreleased
 
+- Restore `better-sqlite3` to `^13.0.3` (N-API) and raise `engines.node`
+  to `>=22.0.0`. The 12.11.1 pin brought back the NAN addon, whose
+  `Statement::~Statement()` aborts the `stop` hook on Node 24.19+ with
+  `Assertion failed: (env) != nullptr`. Compile the addon explicitly in
+  `preInstall`, since npm 11.19 no longer builds it. See SPEC.md items
+  14-16.
+
 - Drop better-sqlite3's node-gyp build tree after install, keeping only the
   compiled addons. It referenced python3, npm and the node source, so the
   runtime closure shrinks from 1.6 GiB to 265 MiB.
